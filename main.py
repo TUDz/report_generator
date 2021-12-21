@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from pandas.core.frame import DataFrame
+from utils import HEADERS_DEMOGRAFICOS, HEADERS_DISPERSIONES, HEADERS_DOMICILIOS
 
 def load_files():
     demograficos = pd.read_csv('./DM_DatosGenerales.txt', delimiter='|', encoding='latin1', header=0, dtype=object)
@@ -52,30 +53,11 @@ def transform_files(N, demograficos: pd.DataFrame, dispersiones: pd.DataFrame, d
     # Se obtiene una muestra del set 
     subset = set.sample(n=N)
     # Se crean los archivos de muestra con el número de registros solicitado
-    m_demograficos = subset[['#FI_ID_INSTITUCION', 'FI_EMPLEADO', 'FI_PAISCU', 'FI_CANALCU',
-       'FI_SUCURSALCU', 'FI_FOLIOCU', 'FC_INSTITUCION', 'FC_NOMBRECOMPLETO',
-       'FD_FECHANACIMIENTO', 'FC_PAISNACIMIENTO', 'FC_ESTADONACIMIENTO',
-       'FI_EDAD', 'FC_RFC', 'FC_CURP', 'FC_NSS', 'FC_ESTADOCIVIL',
-       'FC_ESCOLARIDAD', 'FC_SEXO', 'FC_TELEFONOCASA', 'FC_TELCELULAR',
-       'FC_EMAIL', 'FC_AVISOPRIVACIDAD', 'FC_CONSULTABURO',
-       'FC_USODATOSPERSONA', 'FC_USODATOSPROMO', 'FC_NACIONALIDAD',
-       'FD_ALTAEMPLEADO', 'FI_DATOS_CORRECTOS', 'FI_OFERTA', 'FC_STATUS_EMP',
-       'FI_STATUS_EMP', 'FC_NOMBRE_EMPLEADO', 'FC_APELLIDO_PATERNO',
-       'FC_APELLIDO_MATERNO', 'FI_ID_PAIS_y', 'FD_FECHA_ALTA',
-       'FNPAISNACIMIENTO', 'FNEDONACIMIENTO', 'FNESTADOCIVIL', 'FNESCOLARIDAD',
-       'FNSEXO', 'FNNACIONALIDAD']]
+    m_demograficos = subset[HEADERS_DEMOGRAFICOS]
 
-    m_dispersiones = subset[['#FI_ID_INSTITUCION_x', 'FI_EMPLEADO', 'FC_CUENTA', 'FD_ULTIMADISPER',
-       'FI_TOTALDISPER', 'FN_SALARIO', 'FC_PERIODICIDADPAGO',
-       'FI_CAPACIDADPAGO', 'FC_PRODUCTO', 'FI_ID_PRODUCTO', 'FI_CREDITOSACTIV',
-       'FIPERIODICIDADPAGO', 'FI_CTA_DIGITOS']]
+    m_dispersiones = subset[HEADERS_DISPERSIONES]
     
-    m_domicilios = subset[['#FI_ID_INSTITUCION_y', 'FI_EMPLEADO',
-       'FC_CALLEHOGAR', 'FC_NUMEXTHOGAR', 'FC_NUMINTHOGAR', 'FC_COLONIAHOGAR',
-       'FC_MUNICIPIOHOGAR', 'FC_ESTADOHOGAR', 'FC_CODIGOPOSTAL', 'FC_PAIS',
-       'FI_ID_TIPOVIVIENDA', 'FC_ID_TIPOVIVIENDA', 'FC_LATITUD', 'FC_LONGITUD',
-       'FC_SUCURSAL', 'FI_ID_COLONIA', 'FI_ID_MUNICIPIO', 'FC_ID_ESTADO',
-       'FI_ID_PAIS_x']]
+    m_domicilios = subset[HEADERS_DOMICILIOS]
 
     # Se corrigen nombres de columnas debido al Merge
     m_demograficos.rename(columns={'FI_ID_PAIS_y':'FI_ID_PAIS'}, inplace=True)
@@ -102,7 +84,7 @@ def write_files(m_demograficos, m_dispersiones, m_domicilios, m_marca_big):
     m_demograficos.to_csv('DM_DatosGenerales.txt.1', sep='|', index=False)
     m_marca_big.to_csv('Marca_BIG.txt.1', sep='|', index=False)
 
-def run(N:int = 10000):
+def run(N:int = 100):
     # Se leen los archivos
     demograficos, dispersiones, domicilios, marca_big = load_files()
     # Se procesan los archivos
